@@ -33,6 +33,16 @@ I've verified that all the code is now working correctly. Here's what was tested
 **Fix:** Updated requirements.txt to use pandas>=2.2.0
 **File:** `requirements.txt:5`
 
+### 6. ✅ SQLAlchemy DetachedInstanceError - FIXED
+**Issue:** `DetachedInstanceError: Instance <User> is not bound to a Session`
+**Fix:** Added `session.refresh()` and `session.expunge()` to properly detach User object
+**File:** `src/services/auth_service.py:50-53`
+
+### 7. ✅ Login UI Professional Design - FIXED
+**Issue:** Login window looked unprofessional with poor text rendering
+**Fix:** Complete UI redesign with better fonts, spacing, styling, and layout
+**File:** `src/ui/login_window.py`
+
 ---
 
 ## ✅ Code Verification Tests
@@ -80,10 +90,20 @@ Database ready: {'users': 1, 'contacts': 0, 'campaigns': 0, ...}
 
 ### Step 3: Login Window Appears
 A professional login window will appear with:
-- WhatsApp Sender Bot Pro title
+- Clean white background
+- "WhatsApp Bot" title with "Professional Message Sender" subtitle
 - Username field (pre-filled with "admin")
 - Password field
-- Green login button
+- Large green "LOGIN" button
+- Helpful hint: "Default credentials: admin / admin123"
+- Version number at bottom
+
+**New Professional Design:**
+- Larger window (450x400)
+- Better spacing and typography
+- Modern input fields with focus states
+- Segoe UI font for crisp text rendering
+- Hover effects on buttons
 
 ### Step 4: Main Application Window
 After logging in, you'll see:

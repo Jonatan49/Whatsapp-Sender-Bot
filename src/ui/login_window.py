@@ -27,110 +27,151 @@ class LoginWindow(QDialog):
 
     def init_ui(self):
         """Initialize the user interface."""
-        self.setWindowTitle('WhatsApp Sender Bot Pro - Login')
-        self.setFixedSize(400, 300)
+        self.setWindowTitle('Login - WhatsApp Bot')
+        self.setFixedSize(450, 400)
         self.setModal(True)
 
         # Main layout
         layout = QVBoxLayout()
-        layout.setSpacing(20)
-        layout.setContentsMargins(40, 40, 40, 40)
+        layout.setSpacing(15)
+        layout.setContentsMargins(50, 40, 50, 40)
+
+        # Header with icon
+        header_layout = QVBoxLayout()
+        header_layout.setSpacing(10)
 
         # Title
-        title = QLabel('WhatsApp Sender Bot Pro')
-        title_font = QFont()
-        title_font.setPointSize(18)
-        title_font.setBold(True)
+        title = QLabel('WhatsApp Bot')
+        title_font = QFont('Segoe UI', 20, QFont.Bold)
         title.setFont(title_font)
         title.setAlignment(Qt.AlignCenter)
-        layout.addWidget(title)
+        header_layout.addWidget(title)
 
         # Subtitle
-        subtitle = QLabel('v2.0.0')
+        subtitle = QLabel('Professional Message Sender')
+        subtitle_font = QFont('Segoe UI', 10)
+        subtitle.setFont(subtitle_font)
         subtitle.setAlignment(Qt.AlignCenter)
-        subtitle.setStyleSheet('color: #666;')
-        layout.addWidget(subtitle)
+        subtitle.setStyleSheet('color: #666; margin-bottom: 10px;')
+        header_layout.addWidget(subtitle)
 
-        # Spacer
+        layout.addLayout(header_layout)
         layout.addSpacing(20)
 
-        # Username
-        username_label = QLabel('Username:')
-        layout.addWidget(username_label)
+        # Login form
+        form_layout = QVBoxLayout()
+        form_layout.setSpacing(12)
+
+        # Username section
+        username_label = QLabel('Username')
+        username_label.setFont(QFont('Segoe UI', 10))
+        username_label.setStyleSheet('color: #333; font-weight: 500;')
+        form_layout.addWidget(username_label)
 
         self.username_input = QLineEdit()
-        self.username_input.setPlaceholderText('Enter username')
-        self.username_input.setText('admin')  # Default for convenience
+        self.username_input.setPlaceholderText('Enter your username')
+        self.username_input.setText('admin')
+        self.username_input.setFont(QFont('Segoe UI', 11))
+        self.username_input.setMinimumHeight(40)
         self.username_input.returnPressed.connect(self.handle_login)
-        layout.addWidget(self.username_input)
+        form_layout.addWidget(self.username_input)
 
-        # Password
-        password_label = QLabel('Password:')
-        layout.addWidget(password_label)
+        form_layout.addSpacing(5)
+
+        # Password section
+        password_label = QLabel('Password')
+        password_label.setFont(QFont('Segoe UI', 10))
+        password_label.setStyleSheet('color: #333; font-weight: 500;')
+        form_layout.addWidget(password_label)
 
         self.password_input = QLineEdit()
-        self.password_input.setPlaceholderText('Enter password')
+        self.password_input.setPlaceholderText('Enter your password')
         self.password_input.setEchoMode(QLineEdit.Password)
+        self.password_input.setFont(QFont('Segoe UI', 11))
+        self.password_input.setMinimumHeight(40)
         self.password_input.returnPressed.connect(self.handle_login)
-        layout.addWidget(self.password_input)
+        form_layout.addWidget(self.password_input)
 
-        # Spacer
+        layout.addLayout(form_layout)
         layout.addSpacing(10)
 
         # Login button
-        self.login_button = QPushButton('Login')
-        self.login_button.setMinimumHeight(40)
+        self.login_button = QPushButton('LOGIN')
+        self.login_button.setMinimumHeight(45)
+        self.login_button.setFont(QFont('Segoe UI', 11, QFont.Bold))
         self.login_button.clicked.connect(self.handle_login)
         self.login_button.setDefault(True)
+        self.login_button.setCursor(Qt.PointingHandCursor)
         layout.addWidget(self.login_button)
 
+        layout.addSpacing(10)
+
         # Info label
-        info_label = QLabel('Default: admin / admin123')
+        info_label = QLabel('Default credentials: admin / admin123')
         info_label.setAlignment(Qt.AlignCenter)
-        info_label.setStyleSheet('color: #999; font-size: 10px;')
+        info_label.setFont(QFont('Segoe UI', 9))
+        info_label.setStyleSheet('color: #999; padding: 5px;')
         layout.addWidget(info_label)
+
+        # Version
+        version_label = QLabel('v2.0.0')
+        version_label.setAlignment(Qt.AlignCenter)
+        version_label.setFont(QFont('Segoe UI', 8))
+        version_label.setStyleSheet('color: #ccc; margin-top: 5px;')
+        layout.addWidget(version_label)
 
         self.setLayout(layout)
 
         # Apply styling
         self.apply_styles()
 
+        # Set focus to password field if username is filled
+        if self.username_input.text():
+            self.password_input.setFocus()
+
     def apply_styles(self):
         """Apply custom styles to the window."""
         self.setStyleSheet("""
             QDialog {
-                background-color: #f5f5f5;
+                background-color: #ffffff;
             }
             QLabel {
                 color: #333;
             }
             QLineEdit {
-                padding: 8px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                background-color: white;
-                font-size: 12px;
+                padding: 10px 12px;
+                border: 2px solid #e0e0e0;
+                border-radius: 6px;
+                background-color: #fafafa;
+                font-size: 13px;
+                color: #333;
             }
             QLineEdit:focus {
-                border: 1px solid #25D366;
+                border: 2px solid #25D366;
+                background-color: white;
+            }
+            QLineEdit:hover {
+                border: 2px solid #bbb;
             }
             QPushButton {
                 background-color: #25D366;
                 color: white;
                 border: none;
-                border-radius: 4px;
-                padding: 10px;
-                font-size: 14px;
+                border-radius: 6px;
+                padding: 12px;
+                font-size: 13px;
                 font-weight: bold;
+                letter-spacing: 1px;
             }
             QPushButton:hover {
-                background-color: #22c55e;
+                background-color: #1fb855;
             }
             QPushButton:pressed {
-                background-color: #20b558;
+                background-color: #1a9d47;
             }
             QPushButton:disabled {
-                background-color: #ccc;
+                background-color: #cccccc;
+                color: #888;
             }
         """)
 

@@ -46,6 +46,12 @@ class AuthService:
             if user.check_password(password):
                 user.record_login_attempt(success=True)
                 session.commit()
+
+                # Load all attributes before session closes
+                session.refresh(user)
+                # Make object usable outside of session
+                session.expunge(user)
+
                 self.logger.info(f"User '{username}' authenticated successfully")
                 return user
             else:

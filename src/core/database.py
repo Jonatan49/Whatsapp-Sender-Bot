@@ -94,6 +94,7 @@ class Database:
                 )
                 admin.set_password('admin123')  # Default password - should be changed
                 session.add(admin)
+                session.flush()  # Flush to get admin.id before using it
 
                 print("✓ Created default admin user (username: admin, password: admin123)")
                 print("⚠ Please change the default password immediately!")

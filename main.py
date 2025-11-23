@@ -44,24 +44,33 @@ def main():
     app.setApplicationVersion(config.app_version)
     app.setOrganizationName("Yonatan Cohen")
 
-    # For now, import and run the original app (app.py)
-    # In a full upgrade, we would create new UI components
     logger.info("Starting application...")
 
     try:
-        # Import the original app components
-        sys.path.insert(0, os.path.dirname(__file__))
-        from app import App as LegacyApp
+        # Import UI components
+        from src.ui import LoginWindow, MainWindow
 
-        # Create and show application
-        window = LegacyApp()
-        window.show()
+        # Show login window
+        login_window = LoginWindow()
 
-        logger.info("Application started successfully")
-        logger.info("Use Ctrl+C to exit")
+        # Connect login success to main window
+        def on_login_success(user):
+            logger.info(f"Login successful for user: {user.username}")
+            main_window = MainWindow(user)
+            main_window.show()
 
-        # Run application
-        sys.exit(app.exec_())
+        login_window.login_successful.connect(on_login_success)
+
+        # Show login dialog
+        if login_window.exec_() == LoginWindow.Accepted:
+            logger.info("Application started successfully")
+            logger.info("Use Ctrl+C to exit")
+
+            # Run application
+            sys.exit(app.exec_())
+        else:
+            logger.info("Login cancelled by user")
+            sys.exit(0)
 
     except KeyboardInterrupt:
         logger.info("Application interrupted by user")

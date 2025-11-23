@@ -20,8 +20,7 @@ class LoginWindow(QDialog):
         """Initialize login window."""
         super().__init__(parent)
         self.logger = get_logger('LoginWindow')
-        self.db = get_db()
-        self.auth_service = AuthService(self.db)
+        self.auth_service = AuthService()
         self.user = None
 
         self.init_ui()

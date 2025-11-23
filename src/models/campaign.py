@@ -1,6 +1,6 @@
 """Campaign model for tracking message campaigns."""
 
-from sqlalchemy import Column, String, Integer, ForeignKey, Float, JSON, Enum as SQLEnum
+from sqlalchemy import Column, String, Integer, ForeignKey, Float, JSON, Enum as SQLEnum, Boolean
 from sqlalchemy.orm import relationship
 from .base import BaseModel
 import enum

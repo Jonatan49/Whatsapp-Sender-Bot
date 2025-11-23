@@ -1,6 +1,6 @@
 """Message model for tracking individual messages."""
 
-from sqlalchemy import Column, String, Integer, ForeignKey, Float, Enum as SQLEnum, Text
+from sqlalchemy import Column, String, Integer, ForeignKey, Float, Enum as SQLEnum, Text, Boolean
 from sqlalchemy.orm import relationship
 from .base import BaseModel
 import enum

@@ -32,17 +32,21 @@ class Database:
 
         # Create engine
         if 'sqlite' in database_url:
+            # Use NullPool for SQLite to avoid threading issues
+            # Each thread will get its own connection
+            from sqlalchemy.pool import NullPool
             self.engine = create_engine(
                 database_url,
                 echo=echo,
                 connect_args={'check_same_thread': False},
-                poolclass=StaticPool
+                poolclass=NullPool  # Better for threading than StaticPool
             )
         else:
             self.engine = create_engine(database_url, echo=echo, pool_size=5, max_overflow=10)
 
         # Create session factory
         self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
+        # Use scoped_session for thread safety - each thread gets its own session
         self.ScopedSession = scoped_session(self.SessionLocal)
 
     def create_tables(self) -> None:

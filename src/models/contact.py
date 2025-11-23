@@ -88,4 +88,9 @@ class ContactGroup(BaseModel):
 
     def __repr__(self) -> str:
         """String representation."""
-        return f"<ContactGroup(id={self.id}, name='{self.name}', contacts={len(self.contacts)})>"
+        # Don't access lazy-loaded contacts to avoid DetachedInstanceError
+        try:
+            contact_count = len(self.contacts) if hasattr(self, '_sa_instance_state') and self._sa_instance_state.session else '?'
+        except:
+            contact_count = '?'
+        return f"<ContactGroup(id={self.id}, name='{self.name}', contacts={contact_count})>"

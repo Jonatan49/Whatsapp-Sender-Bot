@@ -201,7 +201,7 @@ class CampaignService:
             campaign.completed_at = datetime.now().isoformat()
 
             # Update statistics
-            campaign.update_statistics()
+            campaign.update_statistics(session)
 
             session.commit()
 
@@ -270,7 +270,7 @@ class CampaignService:
             if not campaign:
                 return {}
 
-            campaign.update_statistics()
+            campaign.update_statistics(session)
 
             return {
                 'id': campaign.id,

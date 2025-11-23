@@ -76,16 +76,30 @@ class Campaign(BaseModel):
             return 0.0
         return (self.messages_sent / self.total_contacts) * 100
 
-    def update_statistics(self) -> None:
-        """Update campaign statistics from messages."""
+    def update_statistics(self, session) -> None:
+        """Update campaign statistics from messages.
+
+        Args:
+            session: Active SQLAlchemy session (required to avoid DetachedInstanceError)
+        """
         from sqlalchemy import func
         from .message import Message, MessageStatus
 
-        # This would typically be called with a session
-        # For now, we'll calculate from the messages relationship
-        self.messages_sent = sum(1 for m in self.messages if m.status in [MessageStatus.SENT, MessageStatus.FAILED])
-        self.messages_failed = sum(1 for m in self.messages if m.status == MessageStatus.FAILED)
-        self.messages_pending = sum(1 for m in self.messages if m.status == MessageStatus.PENDING)
+        # Query database directly instead of using lazy-loaded relationship
+        self.messages_sent = session.query(func.count(Message.id)).filter(
+            Message.campaign_id == self.id,
+            Message.status.in_([MessageStatus.SENT, MessageStatus.FAILED])
+        ).scalar() or 0
+
+        self.messages_failed = session.query(func.count(Message.id)).filter(
+            Message.campaign_id == self.id,
+            Message.status == MessageStatus.FAILED
+        ).scalar() or 0
+
+        self.messages_pending = session.query(func.count(Message.id)).filter(
+            Message.campaign_id == self.id,
+            Message.status == MessageStatus.PENDING
+        ).scalar() or 0
 
     def __repr__(self) -> str:
         """String representation."""

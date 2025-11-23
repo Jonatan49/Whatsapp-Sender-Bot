@@ -24,10 +24,20 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
         self.logger = get_logger('MainWindow')
         self.user = user
+        self.user_id = user.id  # Store ID for database queries
         self.db = get_db()
 
-        self.init_ui()
-        self.load_data()
+        try:
+            self.init_ui()
+            self.load_data()
+        except Exception as e:
+            self.logger.exception(f"Failed to initialize main window: {e}")
+            QMessageBox.critical(
+                self,
+                'Initialization Error',
+                f'Failed to initialize application:\n{str(e)}\n\nPlease contact support.'
+            )
+            raise
 
     def init_ui(self):
         """Initialize the user interface."""
@@ -349,13 +359,30 @@ class MainWindow(QMainWindow):
         try:
             # Update statistics
             stats = self.db.get_statistics()
-            # Update stat cards if they exist
-            # (Would need to update the actual values here)
+
+            # Update stat cards with actual values
+            if hasattr(self, 'stat_cards'):
+                self.update_stat_card(self.stat_cards['contacts'], stats.get('contacts', 0))
+                self.update_stat_card(self.stat_cards['campaigns'], stats.get('campaigns', 0))
+                self.update_stat_card(self.stat_cards['messages'], stats.get('messages', 0))
+                self.update_stat_card(self.stat_cards['templates'], stats.get('templates', 0))
 
             self.statusBar.showMessage('Data loaded successfully', 3000)
         except Exception as e:
             self.logger.exception(f"Error loading data: {e}")
             QMessageBox.critical(self, 'Error', f'Failed to load data:\n{str(e)}')
+
+    def update_stat_card(self, card, value):
+        """Update a statistics card with new value."""
+        try:
+            # Find the value label (second child in layout)
+            layout = card.layout()
+            if layout and layout.count() >= 2:
+                value_label = layout.itemAt(1).widget()
+                if value_label:
+                    value_label.setText(str(value))
+        except Exception as e:
+            self.logger.warning(f"Failed to update stat card: {e}")
 
     def add_contact(self):
         """Add new contact."""

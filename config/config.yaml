@@ -1,0 +1,99 @@
+application:
+  name: "WhatsApp Sender Bot Pro"
+  version: "2.0.0"
+  language: "he"
+  theme: "whatsapp"
+
+browser:
+  default: "chrome"
+  options:
+    - chrome
+    - edge
+    - firefox
+  headless: false
+  detach: true
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+
+whatsapp:
+  base_url: "https://web.whatsapp.com"
+  qr_timeout: 120
+  message_timeout: 20
+  default_country_code: "+972"
+  valid_prefixes:
+    - "5"
+    - "05"
+  phone_length:
+    min: 13
+    max: 14
+
+delays:
+  min_delay: 5
+  max_delay: 10
+  pause_after: 100
+  pause_duration: 120
+  typing_speed:
+    min: 0.05
+    max: 0.15
+  human_variance: 0.3
+
+anti_detection:
+  enabled: true
+  random_mouse_movements: true
+  random_scrolling: true
+  viewport_randomization: true
+  user_agent_rotation: false
+  retry_attempts: 3
+  retry_delay: 5
+
+database:
+  type: "sqlite"
+  path: "data/whatsapp_bot.db"
+  echo: false
+  pool_size: 5
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  max_bytes: 10485760
+  backup_count: 5
+  encrypt: true
+  console: true
+  file: true
+
+security:
+  password_hash_rounds: 12
+  session_timeout: 3600
+  max_login_attempts: 5
+  lockout_duration: 300
+  encrypt_database: true
+  encrypt_logs: true
+
+features:
+  message_templates: true
+  contact_groups: true
+  scheduling: true
+  analytics: true
+  api: false
+  backup_auto: true
+  export_reports: true
+
+ui:
+  window_size:
+    width: 1400
+    height: 800
+  themes:
+    - light
+    - dark
+    - whatsapp
+  languages:
+    - en
+    - he
+  font_family: "Segoe UI"
+  font_size: 13
+
+folders:
+  data: "data"
+  logs: "logs"
+  backups: "data/backups"
+  exports: "data/exports"
+  temp: "data/temp"

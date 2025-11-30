@@ -172,3 +172,29 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Application specific
+data/
+logs/
+*.db
+*.db-journal
+*.db-wal
+.env
+message_library.json
+בוט ווצאפ סופי/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Browser drivers
+chromedriver
+geckodriver
+msedgedriver

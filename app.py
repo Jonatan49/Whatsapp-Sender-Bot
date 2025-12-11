@@ -1133,7 +1133,6 @@ class MainWindow(QMainWindow):
         self.history_table.setColumnCount(4)
         self.history_table.setHorizontalHeaderLabels(["תאריך", "מספר", "סטטוס", "הודעה"])
         self.history_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.update_history_table()
         layout.addWidget(self.history_table)
 
         # כפתורים
@@ -1152,6 +1151,9 @@ class MainWindow(QMainWindow):
 
         self.history_count = QLabel(f"{len(self.history)} רשומות")
         btn_layout.addWidget(self.history_count)
+
+        # עדכון הטבלה אחרי יצירת כל הרכיבים
+        self.update_history_table()
 
         layout.addLayout(btn_layout)
 

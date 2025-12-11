@@ -40,59 +40,61 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 # -------------------------------------------------------------------
-# עיצוב מודרני בסגנון וואצאפ
+# ערכות עיצוב (Themes)
 # -------------------------------------------------------------------
-MAIN_STYLE = """
-QMainWindow, QDialog {
-    background-color: #0b141a;
-}
-QWidget {
-    background-color: #0b141a;
+def generate_theme(bg_main, bg_secondary, bg_input, accent, accent_hover, text_primary, text_secondary, border):
+    """יוצר סגנון CSS מפרמטרים של צבעים"""
+    return f"""
+QMainWindow, QDialog {{
+    background-color: {bg_main};
+}}
+QWidget {{
+    background-color: {bg_main};
     font-family: "Segoe UI", "Arial", sans-serif;
-    color: #e9edef;
+    color: {text_primary};
     font-size: 13px;
-}
-QTabWidget::pane {
-    border: 2px solid #00a884;
+}}
+QTabWidget::pane {{
+    border: 2px solid {accent};
     border-radius: 10px;
-    background-color: #111b21;
-}
-QTabBar::tab {
-    background-color: #1f2c33;
-    color: #8696a0;
+    background-color: {bg_secondary};
+}}
+QTabBar::tab {{
+    background-color: {bg_input};
+    color: {text_secondary};
     padding: 10px 20px;
     margin-right: 2px;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
-}
-QTabBar::tab:selected {
-    background-color: #00a884;
+}}
+QTabBar::tab:selected {{
+    background-color: {accent};
     color: white;
     font-weight: bold;
-}
-QTabBar::tab:hover:!selected {
-    background-color: #2a3942;
-}
-QGroupBox {
-    border: 2px solid #00a884;
+}}
+QTabBar::tab:hover:!selected {{
+    background-color: {border};
+}}
+QGroupBox {{
+    border: 2px solid {accent};
     border-radius: 10px;
-    background-color: #111b21;
+    background-color: {bg_secondary};
     margin-top: 15px;
     padding: 15px;
     padding-top: 25px;
-}
-QGroupBox::title {
+}}
+QGroupBox::title {{
     subcontrol-origin: margin;
     subcontrol-position: top center;
     padding: 5px 20px;
-    background-color: #00a884;
+    background-color: {accent};
     color: white;
     border-radius: 5px;
     font-weight: bold;
     font-size: 14px;
-}
-QPushButton {
-    background-color: #00a884;
+}}
+QPushButton {{
+    background-color: {accent};
     border: none;
     border-radius: 8px;
     padding: 10px 20px;
@@ -100,217 +102,265 @@ QPushButton {
     font-weight: bold;
     color: white;
     min-height: 18px;
-}
-QPushButton:hover {
-    background-color: #02c091;
-}
-QPushButton:pressed {
-    background-color: #008c6f;
-}
-QPushButton:disabled {
-    background-color: #3a4750;
-    color: #8696a0;
-}
-QPushButton#stopButton, QPushButton#deleteBtn, QPushButton#clearBtn {
+}}
+QPushButton:hover {{
+    background-color: {accent_hover};
+}}
+QPushButton:pressed {{
+    background-color: {accent};
+}}
+QPushButton:disabled {{
+    background-color: {border};
+    color: {text_secondary};
+}}
+QPushButton#stopButton, QPushButton#deleteBtn, QPushButton#clearBtn {{
     background-color: #ea4335;
-}
-QPushButton#stopButton:hover, QPushButton#deleteBtn:hover, QPushButton#clearBtn:hover {
+}}
+QPushButton#stopButton:hover, QPushButton#deleteBtn:hover, QPushButton#clearBtn:hover {{
     background-color: #f55246;
-}
-QPushButton#pauseButton, QPushButton#warningBtn {
+}}
+QPushButton#pauseButton, QPushButton#warningBtn {{
     background-color: #fbbc04;
     color: #1a1a1a;
-}
-QPushButton#pauseButton:hover, QPushButton#warningBtn:hover {
+}}
+QPushButton#pauseButton:hover, QPushButton#warningBtn:hover {{
     background-color: #ffc929;
-}
-QPushButton#secondaryBtn {
-    background-color: #2d3e50;
-}
-QPushButton#secondaryBtn:hover {
-    background-color: #3a506b;
-}
-QLineEdit, QTextEdit {
-    background-color: #1f2c33;
-    border: 2px solid #2a3942;
+}}
+QPushButton#secondaryBtn {{
+    background-color: {bg_input};
+}}
+QPushButton#secondaryBtn:hover {{
+    background-color: {border};
+}}
+QLineEdit, QTextEdit {{
+    background-color: {bg_input};
+    border: 2px solid {border};
     border-radius: 8px;
     padding: 8px;
     font-size: 13px;
-    color: #e9edef;
-    selection-background-color: #00a884;
-}
-QLineEdit:focus, QTextEdit:focus {
-    border: 2px solid #00a884;
-}
-QLabel {
+    color: {text_primary};
+    selection-background-color: {accent};
+}}
+QLineEdit:focus, QTextEdit:focus {{
+    border: 2px solid {accent};
+}}
+QLabel {{
     font-size: 13px;
-    color: #8696a0;
+    color: {text_secondary};
     background-color: transparent;
-}
-QLabel#titleLabel {
+}}
+QLabel#titleLabel {{
     font-size: 28px;
     font-weight: bold;
-    color: #00a884;
-}
-QLabel#subtitleLabel {
+    color: {accent};
+}}
+QLabel#subtitleLabel {{
     font-size: 14px;
-    color: #8696a0;
-}
-QLabel#statusLabel {
+    color: {text_secondary};
+}}
+QLabel#statusLabel {{
     font-size: 16px;
     font-weight: bold;
-    color: #00a884;
+    color: {accent};
     padding: 10px;
-    background-color: #1f2c33;
+    background-color: {bg_input};
     border-radius: 8px;
-}
-QLabel#statNumber {
+}}
+QLabel#statNumber {{
     font-size: 32px;
     font-weight: bold;
-    color: #00a884;
-}
-QLabel#statLabel {
+    color: {accent};
+}}
+QLabel#statLabel {{
     font-size: 12px;
-    color: #8696a0;
-}
-QComboBox {
-    background-color: #1f2c33;
-    border: 2px solid #2a3942;
+    color: {text_secondary};
+}}
+QComboBox {{
+    background-color: {bg_input};
+    border: 2px solid {border};
     border-radius: 8px;
     padding: 8px;
-    color: #e9edef;
+    color: {text_primary};
     min-width: 100px;
-}
-QComboBox:hover {
-    border: 2px solid #00a884;
-}
-QComboBox::drop-down {
+}}
+QComboBox:hover {{
+    border: 2px solid {accent};
+}}
+QComboBox::drop-down {{
     border: none;
     padding-right: 10px;
-}
-QComboBox QAbstractItemView {
-    background-color: #1f2c33;
-    color: #e9edef;
-    selection-background-color: #00a884;
-}
-QSpinBox, QTimeEdit, QDateTimeEdit {
-    background-color: #1f2c33;
-    border: 2px solid #2a3942;
+}}
+QComboBox QAbstractItemView {{
+    background-color: {bg_input};
+    color: {text_primary};
+    selection-background-color: {accent};
+}}
+QSpinBox, QTimeEdit, QDateTimeEdit {{
+    background-color: {bg_input};
+    border: 2px solid {border};
     border-radius: 8px;
     padding: 8px;
-    color: #e9edef;
+    color: {text_primary};
     min-width: 80px;
-}
-QSpinBox:focus, QTimeEdit:focus, QDateTimeEdit:focus {
-    border: 2px solid #00a884;
-}
-QListWidget {
-    background-color: #1f2c33;
-    border: 2px solid #2a3942;
+}}
+QSpinBox:focus, QTimeEdit:focus, QDateTimeEdit:focus {{
+    border: 2px solid {accent};
+}}
+QListWidget {{
+    background-color: {bg_input};
+    border: 2px solid {border};
     border-radius: 8px;
     padding: 5px;
-    color: #e9edef;
-}
-QListWidget::item {
+    color: {text_primary};
+}}
+QListWidget::item {{
     padding: 8px;
     border-radius: 5px;
     margin: 2px;
-}
-QListWidget::item:selected {
-    background-color: #00a884;
+}}
+QListWidget::item:selected {{
+    background-color: {accent};
     color: white;
-}
-QListWidget::item:hover:!selected {
-    background-color: #2a3942;
-}
-QTableWidget {
-    background-color: #1f2c33;
-    border: 2px solid #2a3942;
+}}
+QListWidget::item:hover:!selected {{
+    background-color: {border};
+}}
+QTableWidget {{
+    background-color: {bg_input};
+    border: 2px solid {border};
     border-radius: 8px;
-    gridline-color: #2a3942;
-    color: #e9edef;
-}
-QTableWidget::item {
+    gridline-color: {border};
+    color: {text_primary};
+}}
+QTableWidget::item {{
     padding: 5px;
-}
-QTableWidget::item:selected {
-    background-color: #00a884;
+}}
+QTableWidget::item:selected {{
+    background-color: {accent};
     color: white;
-}
-QHeaderView::section {
-    background-color: #111b21;
-    color: #00a884;
+}}
+QHeaderView::section {{
+    background-color: {bg_secondary};
+    color: {accent};
     padding: 8px;
     border: none;
     font-weight: bold;
-}
-QProgressBar {
+}}
+QProgressBar {{
     border: none;
     border-radius: 8px;
-    background-color: #1f2c33;
+    background-color: {bg_input};
     height: 25px;
     text-align: center;
     font-weight: bold;
-}
-QProgressBar::chunk {
-    background-color: #00a884;
+    color: {text_primary};
+}}
+QProgressBar::chunk {{
+    background-color: {accent};
     border-radius: 8px;
-}
-QCheckBox {
-    color: #e9edef;
+}}
+QCheckBox {{
+    color: {text_primary};
     spacing: 8px;
-}
-QCheckBox::indicator {
+}}
+QCheckBox::indicator {{
     width: 20px;
     height: 20px;
     border-radius: 4px;
-    border: 2px solid #2a3942;
-    background-color: #1f2c33;
-}
-QCheckBox::indicator:checked {
-    background-color: #00a884;
-    border: 2px solid #00a884;
-}
-QScrollBar:vertical {
-    background-color: #111b21;
+    border: 2px solid {border};
+    background-color: {bg_input};
+}}
+QCheckBox::indicator:checked {{
+    background-color: {accent};
+    border: 2px solid {accent};
+}}
+QScrollBar:vertical {{
+    background-color: {bg_secondary};
     width: 10px;
     border-radius: 5px;
-}
-QScrollBar::handle:vertical {
-    background-color: #2a3942;
+}}
+QScrollBar::handle:vertical {{
+    background-color: {border};
     border-radius: 5px;
     min-height: 30px;
-}
-QScrollBar::handle:vertical:hover {
-    background-color: #00a884;
-}
-QScrollBar:horizontal {
-    background-color: #111b21;
+}}
+QScrollBar::handle:vertical:hover {{
+    background-color: {accent};
+}}
+QScrollBar:horizontal {{
+    background-color: {bg_secondary};
     height: 10px;
     border-radius: 5px;
-}
-QScrollBar::handle:horizontal {
-    background-color: #2a3942;
+}}
+QScrollBar::handle:horizontal {{
+    background-color: {border};
     border-radius: 5px;
     min-width: 30px;
-}
-QSplitter::handle {
-    background-color: #2a3942;
-}
-QMenu {
-    background-color: #1f2c33;
-    border: 1px solid #2a3942;
+}}
+QSplitter::handle {{
+    background-color: {border};
+}}
+QMenu {{
+    background-color: {bg_input};
+    border: 1px solid {border};
     border-radius: 8px;
     padding: 5px;
-}
-QMenu::item {
+}}
+QMenu::item {{
     padding: 8px 20px;
     border-radius: 4px;
-}
-QMenu::item:selected {
-    background-color: #00a884;
-}
+}}
+QMenu::item:selected {{
+    background-color: {accent};
+}}
 """
+
+# ערכות עיצוב מוגדרות מראש
+THEMES = {
+    "וואצאפ כהה": generate_theme(
+        bg_main="#0b141a", bg_secondary="#111b21", bg_input="#1f2c33",
+        accent="#00a884", accent_hover="#02c091",
+        text_primary="#e9edef", text_secondary="#8696a0", border="#2a3942"
+    ),
+    "וואצאפ בהיר": generate_theme(
+        bg_main="#f0f2f5", bg_secondary="#ffffff", bg_input="#ffffff",
+        accent="#00a884", accent_hover="#02c091",
+        text_primary="#1a1a1a", text_secondary="#667781", border="#e9edef"
+    ),
+    "כחול כהה": generate_theme(
+        bg_main="#0d1117", bg_secondary="#161b22", bg_input="#21262d",
+        accent="#58a6ff", accent_hover="#79b8ff",
+        text_primary="#f0f6fc", text_secondary="#8b949e", border="#30363d"
+    ),
+    "סגול": generate_theme(
+        bg_main="#1a1625", bg_secondary="#221d2e", bg_input="#2d2640",
+        accent="#a855f7", accent_hover="#c084fc",
+        text_primary="#f5f3ff", text_secondary="#a5a0b5", border="#3d3654"
+    ),
+    "ירוק טבע": generate_theme(
+        bg_main="#0f1f1a", bg_secondary="#152924", bg_input="#1c352e",
+        accent="#22c55e", accent_hover="#4ade80",
+        text_primary="#ecfdf5", text_secondary="#86a998", border="#2d4a40"
+    ),
+    "כתום שקיעה": generate_theme(
+        bg_main="#1c1410", bg_secondary="#251a14", bg_input="#2f2118",
+        accent="#f97316", accent_hover="#fb923c",
+        text_primary="#fff7ed", text_secondary="#b8a090", border="#4a3628"
+    ),
+    "ורוד": generate_theme(
+        bg_main="#1f1318", bg_secondary="#291820", bg_input="#351e29",
+        accent="#ec4899", accent_hover="#f472b6",
+        text_primary="#fdf2f8", text_secondary="#b8909a", border="#4a2838"
+    ),
+    "קלאסי בהיר": generate_theme(
+        bg_main="#f5f5f5", bg_secondary="#ffffff", bg_input="#ffffff",
+        accent="#2563eb", accent_hover="#3b82f6",
+        text_primary="#1f2937", text_secondary="#6b7280", border="#e5e7eb"
+    ),
+}
+
+# ערכת ברירת מחדל
+CURRENT_THEME = "וואצאפ כהה"
 
 
 # -------------------------------------------------------------------
@@ -673,6 +723,9 @@ class MainWindow(QMainWindow):
         self.session_sent = 0
         self.session_failed = 0
 
+        # עיצוב
+        self.current_theme = CURRENT_THEME
+
         # טעינת נתונים שמורים
         self.load_saved_data()
 
@@ -706,6 +759,15 @@ class MainWindow(QMainWindow):
                 self.total_sent = stats.get("total_sent", 0)
                 self.total_failed = stats.get("total_failed", 0)
 
+        # טעינת הגדרות (כולל עיצוב)
+        settings_file = get_file_path("settings.json")
+        if os.path.exists(settings_file):
+            with open(settings_file, "r", encoding="utf-8") as f:
+                settings = json.load(f)
+                saved_theme = settings.get("theme", CURRENT_THEME)
+                if saved_theme in THEMES:
+                    self.current_theme = saved_theme
+
     def save_data(self):
         """שומר נתונים לקבצים"""
         # שמירת תבניות
@@ -726,6 +788,12 @@ class MainWindow(QMainWindow):
                 "total_sent": self.total_sent,
                 "total_failed": self.total_failed
             }, f)
+
+        # שמירת הגדרות (כולל עיצוב)
+        with open(get_file_path("settings.json"), "w", encoding="utf-8") as f:
+            json.dump({
+                "theme": self.current_theme
+            }, f, ensure_ascii=False)
 
     def initUI(self):
         central_widget = QWidget()
@@ -1165,6 +1233,21 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         layout = QVBoxLayout()
 
+        # ערכת עיצוב
+        theme_group = QGroupBox("ערכת עיצוב")
+        theme_layout = QHBoxLayout()
+        theme_layout.addWidget(QLabel("בחר עיצוב:"))
+        self.theme_combo = QComboBox()
+        for theme_name in THEMES.keys():
+            self.theme_combo.addItem(theme_name)
+        # בחר את העיצוב הנוכחי
+        self.theme_combo.setCurrentText(self.current_theme)
+        self.theme_combo.currentTextChanged.connect(self.change_theme)
+        theme_layout.addWidget(self.theme_combo)
+        theme_layout.addStretch()
+        theme_group.setLayout(theme_layout)
+        layout.addWidget(theme_group)
+
         # הגדרות דפדפן
         browser_group = QGroupBox("דפדפן")
         browser_layout = QHBoxLayout()
@@ -1262,6 +1345,14 @@ class MainWindow(QMainWindow):
     def browser_changed(self):
         self.browser_choice = self.browser_combo.currentData()
         self.log_message(f"דפדפן: {self.browser_choice}")
+
+    def change_theme(self, theme_name):
+        """משנה את ערכת העיצוב"""
+        if theme_name in THEMES:
+            self.current_theme = theme_name
+            QApplication.instance().setStyleSheet(THEMES[theme_name])
+            self.save_data()
+            self.log_message(f"עיצוב שונה ל: {theme_name}")
 
     def log_message(self, msg):
         timestamp = datetime.datetime.now().strftime('%H:%M:%S')
@@ -1811,7 +1902,20 @@ class MainWindow(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     app.setLayoutDirection(Qt.RightToLeft)
-    app.setStyleSheet(MAIN_STYLE)
+
+    # טעינת העיצוב השמור או ברירת מחדל
+    saved_theme = CURRENT_THEME
+    settings_file = get_file_path("settings.json")
+    if os.path.exists(settings_file):
+        try:
+            with open(settings_file, "r", encoding="utf-8") as f:
+                settings = json.load(f)
+                if settings.get("theme") in THEMES:
+                    saved_theme = settings["theme"]
+        except:
+            pass
+
+    app.setStyleSheet(THEMES[saved_theme])
 
     window = MainWindow()
     window.show()

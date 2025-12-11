@@ -1,43 +1,45 @@
 @echo off
-chcp 65001 >nul
-title בוט שליחת הודעות וואצאפ
+chcp 65001 >nul 2>&1
+title WhatsApp Sender Bot
 
 echo.
-echo ╔════════════════════════════════════════════╗
-echo ║     בוט שליחת הודעות וואצאפ              ║
-echo ║         © Yonatan Cohen                   ║
-echo ╚════════════════════════════════════════════╝
+echo ========================================
+echo        WhatsApp Sender Bot
+echo        (C) Yonatan Cohen
+echo ========================================
 echo.
 
-:: Check if Python is installed
+REM Check if Python is installed
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo [!] Python לא מותקן במחשב
-    echo [!] אנא התקן Python מ-https://python.org
+    echo [ERROR] Python is not installed!
+    echo Please install Python from https://python.org
+    echo.
     pause
     exit /b 1
 )
 
-:: Check and install dependencies
-echo [*] בודק תלויות...
-pip show PyQt5 >nul 2>&1
+echo [*] Checking dependencies...
+
+REM Install dependencies
+pip install -r requirements.txt -q
 if errorlevel 1 (
-    echo [*] מתקין תלויות נדרשות - זה עלול לקחת דקה...
-    pip install -r requirements.txt --quiet
-    if errorlevel 1 (
-        echo [!] שגיאה בהתקנת התלויות
-        pause
-        exit /b 1
-    )
-    echo [+] התלויות הותקנו בהצלחה!
+    echo [ERROR] Failed to install dependencies
+    echo Try running: pip install -r requirements.txt
+    echo.
+    pause
+    exit /b 1
 )
 
-echo [*] מפעיל את התוכנה...
+echo [OK] Dependencies ready!
 echo.
+echo [*] Starting application...
+echo.
+
 python app.py
 
 if errorlevel 1 (
     echo.
-    echo [!] התוכנה נסגרה עם שגיאה
+    echo [ERROR] Application closed with error
     pause
 )

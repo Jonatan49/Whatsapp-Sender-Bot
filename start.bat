@@ -1,79 +1,65 @@
 @echo off
-setlocal EnableDelayedExpansion
 title WhatsApp Sender Bot
 color 0A
+cd /d "%~dp0"
 
 echo.
 echo ========================================
 echo        WhatsApp Sender Bot
-echo           One-Click Setup
 echo ========================================
 echo.
 
-REM Check if Python is installed
-where python >nul 2>&1
+REM Use py launcher which is more reliable on Windows
+py --version >nul 2>&1
 if errorlevel 1 (
-    echo [!] Python not found!
-    echo.
-    echo Please install Python manually:
-    echo 1. Go to https://python.org/downloads
-    echo 2. Download Python 3.12
-    echo 3. Run installer - IMPORTANT: Check "Add to PATH"
-    echo 4. Run this file again
-    echo.
-
-    REM Try to open Python download page
-    start https://www.python.org/downloads/
-
-    echo Opening Python download page...
-    echo.
-    pause
-    exit /b 1
+    python --version >nul 2>&1
+    if errorlevel 1 (
+        echo [ERROR] Python not found!
+        echo.
+        echo Install Python from: https://python.org/downloads
+        echo Make sure to check "Add to PATH" during installation!
+        echo.
+        start https://www.python.org/downloads/
+        pause
+        exit /b 1
+    )
+    set PYTHON_CMD=python
+) else (
+    set PYTHON_CMD=py
 )
 
-echo [OK] Python found:
-python --version
+echo [OK] Python found
+%PYTHON_CMD% --version
 echo.
 
-REM Check if we're in the right folder
 if not exist "app.py" (
     echo [ERROR] app.py not found!
-    echo.
-    echo Make sure you run start.bat from the WhatsApp-Sender-Bot folder.
-    echo.
+    echo Run this from the WhatsApp-Sender-Bot folder.
     pause
     exit /b 1
 )
 
-echo [*] Installing/updating packages...
-echo     Please wait...
-echo.
-
-REM Upgrade pip first
-python -m pip install --upgrade pip --quiet 2>nul
-
-REM Install requirements
-if exist "requirements.txt" (
-    python -m pip install -r requirements.txt --quiet 2>nul
-) else (
-    python -m pip install PyQt5 selenium webdriver-manager pandas openpyxl pyperclip --quiet 2>nul
+REM Check for problematic Lib folder
+if exist "Lib" (
+    echo [WARNING] Found 'Lib' folder that may cause issues.
+    echo Renaming to 'Lib_backup'...
+    ren "Lib" "Lib_backup" 2>nul
 )
 
-echo [OK] Packages ready!
+echo [*] Installing packages...
+%PYTHON_CMD% -m pip install --upgrade pip -q 2>nul
+%PYTHON_CMD% -m pip install PyQt5 selenium webdriver-manager pandas openpyxl pyperclip -q 2>nul
+
+echo [OK] Ready!
 echo.
 echo ========================================
-echo     Starting WhatsApp Sender Bot...
+echo     Starting Application...
 echo ========================================
 echo.
 
-python app.py
+%PYTHON_CMD% app.py
 
 echo.
 echo ========================================
-if errorlevel 1 (
-    echo [!] App closed with error
-) else (
-    echo App closed normally
-)
-echo Press any key to exit...
+echo Press any key to close...
 pause >nul

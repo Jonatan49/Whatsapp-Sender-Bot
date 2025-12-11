@@ -1141,10 +1141,14 @@ class MainWindow(QMainWindow):
 
         btn_layout.addStretch()
 
-        import_btn = QPushButton("ייבא מקובץ")
-        import_btn.setObjectName("secondaryBtn")
+        import_btn = QPushButton("העלה קובץ")
         import_btn.clicked.connect(self.import_blacklist)
         btn_layout.addWidget(import_btn)
+
+        export_btn = QPushButton("ייצא לקובץ")
+        export_btn.setObjectName("secondaryBtn")
+        export_btn.clicked.connect(self.export_blacklist)
+        btn_layout.addWidget(export_btn)
 
         layout.addLayout(btn_layout)
 
@@ -1645,15 +1649,87 @@ class MainWindow(QMainWindow):
             self.save_data()
 
     def import_blacklist(self):
-        fileName, _ = QFileDialog.getOpenFileName(self, "בחר קובץ", "", "Text Files (*.txt);;All Files (*)")
+        fileName, _ = QFileDialog.getOpenFileName(
+            self, "בחר קובץ", "",
+            "Excel Files (*.xlsx);;CSV Files (*.csv);;Text Files (*.txt);;JSON Files (*.json);;All Files (*)"
+        )
         if fileName:
-            with open(fileName, "r") as f:
-                for line in f:
-                    num = line.strip()
+            try:
+                new_numbers = []
+
+                if fileName.endswith(".xlsx"):
+                    df = pd.read_excel(fileName, engine="openpyxl")
+                    for _, row in df.iterrows():
+                        num = str(row.iloc[0]).strip()
+                        new_numbers.append(num)
+                elif fileName.endswith(".csv"):
+                    df = pd.read_csv(fileName)
+                    for _, row in df.iterrows():
+                        num = str(row.iloc[0]).strip()
+                        new_numbers.append(num)
+                elif fileName.endswith(".json"):
+                    with open(fileName, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                        if isinstance(data, list):
+                            new_numbers = [str(n).strip() for n in data]
+                        elif isinstance(data, dict):
+                            new_numbers = [str(k).strip() for k in data.keys()]
+                else:  # txt או קבצים אחרים
+                    with open(fileName, "r", encoding="utf-8") as f:
+                        for line in f:
+                            num = line.strip()
+                            if num:
+                                new_numbers.append(num)
+
+                # נרמול והוספה
+                added = 0
+                for num in new_numbers:
+                    # נרמול מספר
+                    if num.startswith("+972"):
+                        pass
+                    elif num.startswith("972"):
+                        num = "+" + num
+                    elif num.startswith("0"):
+                        num = "+972" + num[1:]
+                    elif num.isdigit():
+                        num = "+972" + num
+
                     if num and num not in self.blacklist:
                         self.blacklist.append(num)
-            self.update_blacklist_display()
-            self.save_data()
+                        added += 1
+
+                self.update_blacklist_display()
+                self.save_data()
+                self.log_message(f"נוספו {added} מספרים לרשימה השחורה")
+
+            except Exception as e:
+                QMessageBox.critical(self, "שגיאה", f"שגיאה בטעינת הקובץ:\n{e}")
+
+    def export_blacklist(self):
+        if not self.blacklist:
+            QMessageBox.warning(self, "שגיאה", "הרשימה השחורה ריקה")
+            return
+
+        fileName, _ = QFileDialog.getSaveFileName(
+            self, "שמור קובץ", "blacklist.xlsx",
+            "Excel Files (*.xlsx);;CSV Files (*.csv);;Text Files (*.txt)"
+        )
+        if fileName:
+            try:
+                if fileName.endswith(".xlsx"):
+                    df = pd.DataFrame({"מספר": self.blacklist})
+                    df.to_excel(fileName, index=False)
+                elif fileName.endswith(".csv"):
+                    df = pd.DataFrame({"מספר": self.blacklist})
+                    df.to_csv(fileName, index=False)
+                else:  # txt
+                    with open(fileName, "w", encoding="utf-8") as f:
+                        for num in self.blacklist:
+                            f.write(num + "\n")
+
+                self.log_message(f"רשימה שחורה יוצאה ל-{fileName}")
+            except Exception as e:
+                QMessageBox.critical(self, "שגיאה", f"שגיאה בשמירה:\n{e}")
 
     def update_blacklist_display(self):
         self.blacklist_widget.clear()
